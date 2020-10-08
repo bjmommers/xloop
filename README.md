@@ -11,7 +11,7 @@ This is a fairly simple process as both XMDS and (the current version of) M-LOOP
 - Install M-LOOP and XMDS2  
 - Clone this repo  
 - In the `XMDS2/` directory, create a new directory with the same name as your simulation (`groundstate` is provided as an example)  
-- Copy your .xmds file into this directory. Make sure you haven't included a <name> tag or a filename in your <output> tag.
+- Copy your .xmds file into this directory. Make sure you haven't included a `<name>` tag or a filename in your `<output>` tag.
 - Compile your simulation with `xmds2 <.xmds filename>`  
 - In the `XMDS2/` directory, replace `fisher-analysis.py` with the script you want to use for data analysis (if renaming, be sure to change the command in `run_xmds.sh` accordingly)  
 - In the root directory of the repo, edit the `simname` variable in `run_xmds.sh` to whatever your .xmds file is named (don't include the extension)  
