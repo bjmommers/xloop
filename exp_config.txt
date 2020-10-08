@@ -1,0 +1,45 @@
+#Tutorial Config
+# Repurposed for XMDS BECring integration
+#---------------
+
+#Interface settings
+interface_type = 'shell'
+command='./run_xmds.sh'
+params_args_type='named'
+
+#Parameter settings
+num_params = 1                               #number of parameters
+param_names = ['Uint']             #parameter names 
+min_boundary = [0]                           #minimum boundary (per param)
+max_boundary = [10]                           #maximum boundary (per param)
+first_params = [1.0]                         #first parameters to try (per param)
+#trust_region = [0.5]                         #maximum % move distance from best params (per param)
+
+#Hyperparameter settings
+length_scale = [1.0]                   #initial length scale for GP
+update_hyperparameters = True               #whether to update noise_level and length_scale
+
+#Halting conditions
+max_num_runs = 120                          #maximum number of runs
+max_num_runs_without_better_params = 20     #maximum number of runs without finding better parameters
+target_cost = 0.0001                         #optimization halts when a cost below this target is found 
+
+#Gaussian Process Learner options
+controller_type = 'gaussian_process'
+cost_has_noise = False                      #whether the costs are corrupted by noise or not
+
+#Training options
+training_type = 'differential_evolution'    # can alternatively use 'random', 'nelder_mead'
+                                            # NOTE: this doesn't seem to work at the moment, as GP controller
+                                            #       uses DE by default, can't see where this overrides
+
+#Timing options
+no_delay = True                            #wait for learner to make generate new parameters or use training algorithms
+
+#File format options
+#interface_file_type = 'txt'                #file types of *exp_input.mat* and *exp_output.mat*
+controller_archive_file_type = 'txt'        #file type of the controller archive
+learner_archive_file_type = 'txt'           #file type of the learner archive
+
+#Visualizations
+visualizations = True

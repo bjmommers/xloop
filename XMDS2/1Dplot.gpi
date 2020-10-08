@@ -1,0 +1,21 @@
+# Gnuplot script for plotting a single frame of 1D XMDS output
+
+# Assume our data is structured in columns:
+# <time> <position> <quantity of interest>
+#
+# Where <time> is not used (since all time values in our data file should be
+# the same), <position> runs along the x-axis, and <quantity of interest>
+# runs along the y-axis.
+
+
+
+# Use the png terminal to enable collation of single frame plots into a movie
+set terminal png font "TeX Gyre Termes" 20 size 1600,900 enhanced
+set output ARG2.".png"
+set yrange [99999:100001]
+plot ARG1 using 2:3 with lines notitle
+
+# Also plot as a .pdf for inspection
+set terminal pdfcairo enhanced color font "TeX Gyre Termes" size 16cm,9cm
+set output ARG2.".pdf"
+replot

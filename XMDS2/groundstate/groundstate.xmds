@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulation xmds-version="2">
+  <name>groundstate</name>
+  <author>Brad Mommers (thanks to Joe Hope)</author>
+  <description>
+      Calculate the ground state of the non-linear Schrodinger equation in an
+      azimuthally modulated ring potential 
+      Get periodic boundary conditions for free from DFT
+  </description>
+  
+  <features>
+    <auto_vectorise />
+    <benchmark />
+    <bing />
+    <fftw plan="exhaustive" />
+    <arguments>
+        <argument name="Uint" type="real" default_value="1.0" />
+        <argument name="Nparticles" type="real" default_value="1000000.0" />
+        <argument name="ring_radius" type="real" default_value="1.0" />
+        <argument name="imprint_amp" type="real" default_value="0.25" />
+        <argument name="imprint_l" type="real" default_value="5.0" />
+        <argument name="circumference" type="real" default_value="10.0" />
+    </arguments>
+    <validation kind="run-time" />
+<!--
+    <globals>
+      <![CDATA[
+        const real Uint = 2.0;
+        const real Nparticles = 5.0;
+      ]]>
+    </globals>
+-->
+  </features>
+  
+  <geometry>
+    <propagation_dimension> t </propagation_dimension>
+    <transverse_dimensions>
+      <dimension name="theta" lattice="256"  domain="(0.0, circumference)" />
+    </transverse_dimensions>
+  </geometry>
+  
+  <vector name="potential" initial_basis="theta" type="real">
+    <components> V_imprint </components>
+    <initialisation>
+      <![CDATA[
+      V_imprint  = 1.0-(imprint_amp*cos(2.0*M_PI*imprint_l*(theta/circumference)));
+      ]]>
+    </initialisation>
+  </vector>
+  
+  <vector name="wavefunction" initial_basis="theta" type="complex">
+    <components> phi </components>
+    <initialisation>
+      <![CDATA[
+      phi = Nparticles/circumference;
+            ]]>
+    </initialisation>
+  </vector>
+  
+  <computed_vector name="normalisation" dimensions="" type="real">
+    <components> Ncalc </components>
+    <evaluation>
+      <dependencies basis="theta">wavefunction</dependencies>
+      <![CDATA[
+        // Calculate the current normalisation of the wave function.
+        Ncalc = mod2(phi);
+      ]]>
+    </evaluation>
+  </computed_vector>
+  
+  <sequence>
+      <filter>
+        <![CDATA[
+          printf("Hello world from a filter segment!\n");
+        ]]>
+      </filter>
+
+    <filter>
+        <dependencies>normalisation wavefunction</dependencies>
+      <![CDATA[
+        phi *= sqrt(Nparticles/Ncalc);
+      ]]>
+    </filter>
+
+    <integrate algorithm="ARK45" interval="10.0" steps="4000" tolerance="1e-6">
+      <samples>100 100</samples>
+      <filters where="step end">
+        <filter>
+          <dependencies>wavefunction normalisation</dependencies>
+          <![CDATA[
+            // Correct normalisation of the wavefunction
+            phi *= sqrt(Nparticles/Ncalc);
+          ]]>
+        </filter>
+      </filters>
+      <operators>
+        <operator kind="ip">
+          <operator_names>T</operator_names>
+          <![CDATA[
+            T = -0.5*ktheta*ktheta;
+          ]]>
+        </operator>
+        <integration_vectors>wavefunction</integration_vectors>
+        <dependencies>potential</dependencies>
+        <![CDATA[
+          dphi_dt = T[phi] - (V_imprint + Uint*mod2(phi))*phi;
+        ]]>
+      </operators>
+    </integrate>
+
+    <breakpoint filename="groundstate_break.xsil" format="ascii">
+      <dependencies basis="ktheta">wavefunction </dependencies>
+    </breakpoint>
+
+  </sequence>
+
+  <output format="ascii" filename="groundstate.xsil">
+      <sampling_group basis="theta" initial_sample="yes">
+        <moments>norm_dens</moments>
+        <dependencies>wavefunction normalisation</dependencies>
+        <![CDATA[
+          norm_dens = mod2(phi);
+        ]]>
+      </sampling_group>
+      <sampling_group initial_sample="yes">
+        <moments>norm</moments>
+        <dependencies>normalisation</dependencies>
+        <![CDATA[
+          norm = Ncalc;
+        ]]>
+      </sampling_group>
+  </output>
+</simulation>
