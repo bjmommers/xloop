@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ################################################################################
 # Extract the data from an ACSII .xsil file produced by XMDS                   # 

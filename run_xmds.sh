@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Wrapper to communicate between XMDS simulations and M-LOOP optimiser
 # Brad Mommers 2020
@@ -76,7 +76,7 @@ else
     cd $simname-data
 
     # Calculate cost from data, place it in file mloop_cost.txt
-    ../../fisher-analysis.py moment_group_xx01.dat
+    ../../xsil-analyse.py "moment_group_xx0$moment_group.dat"
     # Return to directory from which M-LOOP is started
     cd ../../..
 fi

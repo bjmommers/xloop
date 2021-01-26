@@ -1,8 +1,8 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
-# Calculate cost from hdf5 format data produced by XMDS
+### Calculate cost from hdf5 format data produced by XMDS
 
-#Libraries
+# Libraries
 import h5py  # hdf5 format interpreter
 import sys   # file and argument manipulation
 import math  # for calculating cost
@@ -20,24 +20,17 @@ def calculate_cost(data):
     cost = 1.0/(math.log(max_cfi))
     return cost,0.01*cost
 
-# import first argument as hdf5 file object
+### import first argument as hdf5 file object
 datafile = h5py.File(sys.argv[1] + ".h5",'r')
 moment_group = sys.argv[2]
 data_member = sys.argv[3]
 
-# get name of quantity to analyse from members of group
-#for member in list(datafile[moment_group]):
-    #if (member != 't') and (member != 'r') and (member != 'theta'):
-        #data = member
-
-# second argument contains moment group to analyse
-# third argument contains member name
-
 print(datafile[moment_group][data_member])
 
-# pass data to function that calculates the cost
+### pass data to function that calculates the cost
 result,uncertainty = calculate_cost(datafile[moment_group][data_member])
 
+### output cost and uncertainty per M-LOOP spec
 outfile = open(sys.argv[1] + "-data/mloop_cost.txt",'w')
 outfile.write(f"cost = {result}\n")
 outfile.write(f"uncer = {uncertainty}\n")
