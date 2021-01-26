@@ -1,45 +1,102 @@
-#Tutorial Config
-# Repurposed for XMDS BECring integration
+# Tutorial Config
+# Repurposed for XMDS & BECring integration
+#
+# Usage:
+#       You should only need to adjust the 'Parameter settings' section
 #---------------
 
-#Interface settings
+### Interface settings ###
+## choice of interface (we need 'shell')
 interface_type = 'shell'
+## shell command to run (our wrapper script)
 command='./run_xmds.sh'
+## specify param argument format
 params_args_type='named'
 
-#Parameter settings
-num_params = 1                               #number of parameters
-param_names = ['Uint']             #parameter names 
-min_boundary = [0]                           #minimum boundary (per param)
-max_boundary = [10]                           #maximum boundary (per param)
-first_params = [1.0]                         #first parameters to try (per param)
-#trust_region = [0.5]                         #maximum % move distance from best params (per param)
 
-#Hyperparameter settings
-length_scale = [1.0]                   #initial length scale for GP
-update_hyperparameters = True               #whether to update noise_level and length_scale
+### Parameter settings ###
 
-#Halting conditions
-max_num_runs = 120                          #maximum number of runs
-max_num_runs_without_better_params = 20     #maximum number of runs without finding better parameters
-target_cost = 0.0001                         #optimization halts when a cost below this target is found 
+## number of parameters
+num_params = 1
 
-#Gaussian Process Learner options
+## parameter names (list with length = num_params) 
+param_names = ['Uint']
+
+## minimum boundary (per param, in order of param_names)
+min_boundary = [0]                          
+
+## maximum boundary (per param)
+max_boundary = [1]                         
+
+## first parameters to try (per param)
+first_params = [0.25]                        
+
+## maximum % move distance from best params (per param)
+trust_region = [1.0]                        
+
+###
+
+
+### Hyperparameter settings ###
+
+## initial length scale for GP
+length_scale = [1.0]                        
+
+## whether to update noise_level and length_scale
+update_hyperparameters = True               
+
+###
+
+
+### Halting conditions ###
+
+## maximum number of runs
+max_num_runs = 120                          
+
+## maximum number of runs without finding better parameters
+max_num_runs_without_better_params = 20     
+
+## optimization halts when a cost below this target is found 
+target_cost = 0.0001                        
+
+###
+
+
+### Gaussian Process Learner options ###
+
 controller_type = 'gaussian_process'
-cost_has_noise = False                      #whether the costs are corrupted by noise or not
 
-#Training options
-training_type = 'differential_evolution'    # can alternatively use 'random', 'nelder_mead'
-                                            # NOTE: this doesn't seem to work at the moment, as GP controller
-                                            #       uses DE by default, can't see where this overrides
+## whether the costs are corrupted by noise or not
+cost_has_noise = False                      
 
-#Timing options
-no_delay = True                            #wait for learner to make generate new parameters or use training algorithms
+###
 
-#File format options
-#interface_file_type = 'txt'                #file types of *exp_input.mat* and *exp_output.mat*
-controller_archive_file_type = 'txt'        #file type of the controller archive
-learner_archive_file_type = 'txt'           #file type of the learner archive
 
-#Visualizations
+### Training options ###
+
+training_type = 'differential_evolution'    
+## can alternatively use 'random', 'nelder_mead'
+## NOTE: this doesn't seem to work at the moment, as GP controller
+##       uses DE by default, can't see where this overrides
+
+
+### Timing options ###
+## wait for learner to generate new parameters (False) or use training algorithms (True)
+no_delay = False                            
+
+###
+
+### File format options ###
+## file types of *exp_input.mat* and *exp_output.mat*
+#interface_file_type = 'txt'                
+
+## file type of the controller archive
+controller_archive_file_type = 'txt'        
+
+## file type of the learner archive
+learner_archive_file_type = 'txt'           
+
+### Visualizations ###
 visualizations = True
+
+###
